@@ -1,5 +1,7 @@
 import tkinter as tk
 import re
+import string
+
 class Calculator:
     def __init__(self, master,result):
         self.master = master
@@ -40,7 +42,7 @@ class Calculator:
         b14 = self.createButton(0)
         b15 = self.createButton(None)
         b16 = self.createButton('+', bg='#212121')
-        b17 = self.createButton('DEL', None, bg='#212121')
+        b17 = self.createButton(u"\u232B", None, bg='#212121')
         b18 = self.createButton('CE', None, bg='#212121')
         b19 = self.createButton('=', None, bg='#c41212')
         b15.config(state='disabled')
@@ -58,14 +60,37 @@ class Calculator:
         buttons[17].grid(row=2, column=4, rowspan=2, sticky=tk.W+tk.E+tk.N+tk.S)
         buttons[18].grid(row=4, column=4, rowspan=1, sticky=tk.W+tk.E+tk.N+tk.S)
 
+        #get keyboard input
+        master.bind(1,lambda event: self.click(1,True,self.result))
+        master.bind(2,lambda event: self.click(2,True,self.result))
+        master.bind(3,lambda event: self.click(3,True,self.result))
+        master.bind(4,lambda event: self.click(4,True,self.result))
+        master.bind(5,lambda event: self.click(5,True,self.result))
+        master.bind(6,lambda event: self.click(6,True,self.result))
+        master.bind(7,lambda event: self.click(7,True,self.result))
+        master.bind(8,lambda event: self.click(8,True,self.result))
+        master.bind(9,lambda event: self.click(9,True,self.result))
+        master.bind(0,lambda event: self.click(0,True,self.result))
+        master.bind(',',lambda event: self.click(',',True,self.result))
+        master.bind('+',lambda event: self.click('+',True,self.result))
+        master.bind('-',lambda event: self.click('-',True,self.result))
+        master.bind('*',lambda event: self.click(u'\u00D7',True,self.result))
+        master.bind('/',lambda event: self.click(u"\u00F7",True,self.result))
+        master.bind('<BackSpace>',lambda event: self.click(u"\u232B",None,self.result))
+        master.bind('<Delete>',lambda event: self.click("CE",None,self.result))
+        master.bind('<Return>',lambda event: self.click('=',None,self.result))
+        master.bind('=',lambda event: self.click('=',None,self.result))
+
     def createButton(self,val,write=True,width=5,bg="black",fg="white"):
-        return tk.Button(self.master, text=val, command = lambda:self.click(val,write,self.result), width=width,bg=bg,bd=0,fg=fg, font=('Helvetica',24))
+        return tk.Button(self.master, text=val, command = lambda:self.click(val,write,self.result),
+         width=width,bg=bg,bd=0,fg=fg, font=('Helvetica',24))
 
     def click(self,text,write,result):
         if write == None:
             if text == '=' and self.equation:
                 self.equation = re.sub(u"\u00F7", '/', self.equation)
                 self.equation = re.sub(u'\u00D7', '*', self.equation)
+                self.equation = re.sub(",", ".", self.equation)
                 self.equation = re.sub(r"((?<=^)|(?<=[^\.\d]))0+(\d+)", r"\1\2", self.equation)
                 answer = str(eval(self.equation))
                 self.clear_screen()
@@ -73,13 +98,13 @@ class Calculator:
                 self.result = True
             elif text == "CE":
                 self.clear_screen()
-            elif text == "DEL":
+            elif text == u"\u232B":
                 self.del_screen()
         else:
             if result and type(text) == int:
                 self.clear_screen()
                 self.result = False
-            if text == "+" or text == "-" or text == u"\u00D7" or text == u"\u00F7":
+            if text == "+" or text == "-" or text == u"\u00D7" or text == u"\u00F7" or text == ",":
                 self.result = False
             self.insert_screen(text)
 
