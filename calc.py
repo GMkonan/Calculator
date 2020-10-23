@@ -92,6 +92,7 @@ class Calculator:
                 self.equation = re.sub(u'\u00D7', '*', self.equation)
                 self.equation = re.sub(",", ".", self.equation)
                 self.equation = re.sub(r"((?<=^)|(?<=[^\.\d]))0+(\d+)", r"\1\2", self.equation)
+
                 answer = str(eval(self.equation))
                 self.clear_screen()
                 self.insert_screen(answer, newline=True)
@@ -106,6 +107,7 @@ class Calculator:
                 self.result = False
             if text == "+" or text == "-" or text == u"\u00D7" or text == u"\u00F7" or text == ",":
                 self.result = False
+            print(self.equation)
             self.insert_screen(text)
 
     def clear_screen(self):
